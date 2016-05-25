@@ -52,7 +52,7 @@ class Sbd:
     '''Database file for Simi BioCell.'''
     def __init__(self, sbd_file):
         self.sbd_file = self.open_sbd(sbd_file)
-        self.cells = []
+        self.cells = {}
 
         # Parse file.
         self.parse_sbd()
@@ -88,7 +88,7 @@ class Sbd:
 
     def add_cell(self, cell):
         '''Add new cell to list of cells.'''
-        self.cells.append(cell)
+        self.cells[cell.generic_name] = cell
 
 class Cell:
     '''Store all cell-related information'''
@@ -110,10 +110,6 @@ class Cell:
 
         # Parse data, any error returns False (invalid).
         self.valid = self.parse_data()
-
-        # Print out valid cell data.
-        if self.valid:
-            self.print_data()
 
     def parse_data(self):
         '''Extract attributes from raw data.'''
