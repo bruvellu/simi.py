@@ -94,9 +94,9 @@ class Sbd:
         '''Output flat matrix files with all cells.'''
         matrix = open(outfile, 'w')
         # Write header.
-        matrix.write(',{0},{1},{2},{3},{4}\n'.format('frame', 'mitosis_id', 'color', 'n_spots', 'custom_name'))
+        matrix.write(',{0},{1},{2},{3},{4}\n'.format('frame', 'mitosis', 'color', 'n_spots', 'custom_name'))
         for cell_id, cell in self.cells.items():
-            matrix.write('{0},{1},{2},{3},{4},{5}\n'.format(cell.generic_name, cell.frame, cell.mitosis_id, cell.color, cell.n_spots, cell.custom_name))
+            matrix.write('{0},{1},{2},{3},{4},{5}\n'.format(cell.generic_name, cell.frame, cell.mitosis, cell.color, cell.n_spots, cell.custom_name))
         matrix.close()
 
 
@@ -108,7 +108,7 @@ class Cell:
 
         # Cell attributes.
         self.generic_name = ''
-        self.mitosis_id = 0
+        self.mitosis = 0
         self.frame = 0
         self.color = 0
         self.custom_name = ''
@@ -135,7 +135,7 @@ class Cell:
         # Mitosis ID.
         try:
             line_two = split_lines[1]
-            self.mitosis_id = int(line_two.split()[0])
+            self.mitosis = int(line_two.split()[0])
         except:
             return False
 
