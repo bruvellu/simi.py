@@ -90,6 +90,16 @@ class Sbd:
         '''Add new cell to list of cells.'''
         self.cells[cell.generic_name] = cell
 
+    def write_matrix(self, outfile):
+        '''Output flat matrix files with all cells.'''
+        matrix = open(outfile, 'w')
+        # Write header.
+        matrix.write(',{0},{1},{2},{3},{4}\n'.format('frame', 'mitosis_id', 'color', 'n_spots', 'custom_name'))
+        for cell_id, cell in self.cells.items():
+            matrix.write('{0},{1},{2},{3},{4},{5}\n'.format(cell.generic_name, cell.frame, cell.mitosis_id, cell.color, cell.n_spots, cell.custom_name))
+        matrix.close()
+
+
 class Cell:
     '''Store all cell-related information'''
     def __init__(self, raw_data):
