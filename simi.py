@@ -14,7 +14,7 @@ Usage:
     import simi
 
     # Parse a Simi BioCell .sbd file.
-    s = simi.SBD('lineage.sbd')
+    s = simi.Sbd('lineage.sbd')
 
     # Access all cells.
     s.cells
@@ -61,14 +61,14 @@ class Sbd:
         '''Get user input, save abspath and try to read file.'''
         try:
             sbd_file = open(filepath)
-            print('Loaded file "{0}"'.format(sbd_file.name))
+            print('Loaded "{0}"'.format(sbd_file.name))
             return sbd_file
         except:
             print('Could not load the file "{0}"'.format(filepath))
 
     def parse_sbd(self):
         '''Parse SBD information.'''
-        print('Parsing "{0}"'.format(self.sbd_file))
+        print('Parsing "{0}"'.format(self.sbd_file.name))
         # Temporary buffer for each line of a cell record.
         tmp_cell = ''
         # Read SBD file line by line.
@@ -94,7 +94,7 @@ class Sbd:
         '''Output flat matrix files with all cells.'''
         matrix = open(outfile, 'w')
         # Write header.
-        matrix.write(',{0},{1},{2},{3},{4}\n'.format('frame', 'mitosis', 'color', 'n_spots', 'custom_name'))
+        matrix.write('{0},{1},{2},{3},{4},{5}\n'.format('generic_name', 'frame', 'mitosis', 'color', 'n_spots', 'custom_name'))
         for cell_id, cell in self.cells.items():
             matrix.write('{0},{1},{2},{3},{4},{5}\n'.format(cell.generic_name, cell.frame, cell.mitosis, cell.color, cell.n_spots, cell.custom_name))
         matrix.close()
@@ -197,10 +197,10 @@ class Spot:
         coordinates = self.raw_data.split()
 
         # Get attributes.
-        self.frame = coordinates[0]
-        self.x = coordinates[1]
-        self.y = coordinates[2]
-        self.z = coordinates[3]
+        self.frame = int(coordinates[0])
+        self.x = int(coordinates[1])
+        self.y = int(coordinates[2])
+        self.z = int(coordinates[3])
 
         if self.frame:
             return True
