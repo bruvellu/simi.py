@@ -53,6 +53,7 @@ class Sbd:
     def __init__(self, sbd_file):
         self.sbd_file = self.open_sbd(sbd_file)
         self.cells = {}
+        self.last_frame = 0
 
         # Parse file.
         self.parse_sbd()
@@ -89,6 +90,7 @@ class Sbd:
     def add_cell(self, cell):
         '''Add new cell to list of cells.'''
         self.cells[cell.generic_name] = cell
+        self.last_frame = cell.last_frame
 
     def write_matrix(self, outfile):
         '''Output flat matrix files with all cells.'''
@@ -110,6 +112,7 @@ class Cell:
         self.generic_name = ''
         self.mitosis = 0
         self.frame = 0
+        self.last_frame = 0
         self.color = 0
         self.custom_name = ''
         self.n_spots = 0
@@ -165,8 +168,14 @@ class Cell:
             for spot_line in split_lines[4:last_spot_index]:
                 new_spot = Spot(spot_line)
                 self.spots.append(new_spot)
+                self.update_last_frame(new_spot)
             # Change status to valid.
             return True
+
+    def update_last_frame(self, spot):
+        '''Updates the last_frame value for the cell.'''
+        if spot.frame > self.last_frame:
+            self.last_frame = spot.frame
 
     def print_data(self):
         '''Print out cell data.'''
