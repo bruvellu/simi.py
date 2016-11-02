@@ -49,10 +49,10 @@ for key, cell in s.cells.items():
     for spot in cell.spots:
         # Define new id variable.
         spot.id = spot_id
-        # Fix X value to MaMuT (multiply by 1.9).
-        spot.x = spot.x * 1.9 # no idea why...
-        # Fix Y value to MaMuT (multiply by 1.9).
-        spot.y = spot.y * 1.9 # no idea why...
+        # Fix X value to MaMuT (based on CALIBRATION field of .sbc).
+        spot.x = spot.x * 1.869565217
+        # Fix Y value to MaMuT.
+        spot.y = spot.y * 1.869565217
         # Fix Z value to MaMuT (multiply by 10).
         spot.z = spot.z * 10.0
         # Append spot to the list of his frame.
