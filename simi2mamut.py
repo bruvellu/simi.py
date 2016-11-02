@@ -2,6 +2,12 @@ import simi
 
 # Convert Simi data into MaMuT XML format.
 
+# TODO:
+#   - Put templates in separate file.
+#   - Organize files in 4 tracks, one for each quadrant.
+#   - This script should ultimately be a function within simi.py
+#   - How to connect the cell hierarchy?
+
 # Templates for spots.
 allspots_template =     '    <AllSpots nspots="{nspots}">'
 inframe_template =      '      <SpotsInFrame frame="{frame}">'
