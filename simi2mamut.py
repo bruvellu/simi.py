@@ -23,7 +23,7 @@ filteredtracks_template = ' <FilteredTracks> <TrackID TRACK_ID="1" /> </Filtered
 s = simi.Sbd('lineage.sbd')
 
 # Get a small list of cells (temporary for testing).
-cells = [s.cells['A'], s.cells['B'], s.cells['C'], s.cells['D']]
+#cells = [s.cells['A'], s.cells['B'], s.cells['C'], s.cells['D']]
 
 # Declare initial variables.
 spot_id = 1
@@ -38,7 +38,7 @@ for f in range(0, last_frame + 1):
     spots_per_frame.append([])
 
 # Iterate through cells.
-for cell in cells:
+for key, cell in s.cells.items():
     # Iterate through cell spots.
     for spot in cell.spots:
         # Define new id variable.
