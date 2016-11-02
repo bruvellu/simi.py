@@ -48,6 +48,13 @@ Usage:
 
 '''
 
+# TODO:
+#
+#   - Read and parse .sbc information.
+#   - SimiProject class to integrate data from .sbc and .sbd files.
+#   - Identify and write parsers for all the .sbd fields.
+#   - Reconstruct parent children hierarchy.
+
 class Sbd:
     '''Database file for Simi BioCell.'''
     def __init__(self, sbd_file):
@@ -62,14 +69,12 @@ class Sbd:
         '''Get user input, save abspath and try to read file.'''
         try:
             sbd_file = open(filepath)
-            print('Loaded "{0}"'.format(sbd_file.name))
             return sbd_file
         except:
             print('Could not load the file "{0}"'.format(filepath))
 
     def parse_sbd(self):
         '''Parse SBD information.'''
-        print('Parsing "{0}"'.format(self.sbd_file.name))
         # Temporary buffer for each line of a cell record.
         tmp_cell = ''
         # Read SBD file line by line.
