@@ -90,7 +90,12 @@ class Sbd:
     def add_cell(self, cell):
         '''Add new cell to list of cells.'''
         self.cells[cell.generic_name] = cell
-        self.last_frame = cell.last_frame
+        self.update_last_frame(cell)
+
+    def update_last_frame(self, cell):
+        '''Updates the last_frame value for the simi instance.'''
+        if cell.last_frame > self.last_frame:
+            self.last_frame = cell.last_frame
 
     def write_matrix(self, outfile):
         '''Output flat matrix files with all cells.'''
