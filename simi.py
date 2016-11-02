@@ -119,13 +119,14 @@ class Cell:
         self.valid = False
 
         # Cell attributes.
-        self.generic_name = ''
+        self.generic_name = u''
         self.mitosis = 0
         self.frame = 0
         self.last_frame = 0
         self.color = 0
-        self.custom_name = ''
+        self.custom_name = u''
         self.n_spots = 0
+        self.comment = u''
         self.spots = []
 
         # TODO: Each cell has a parent and a sister. Extract such information
@@ -164,7 +165,11 @@ class Cell:
         # Number of spots.
         try:
             line_four = split_lines[3]
-            self.n_spots = int(line_four.split()[0])
+            line_four_split = line_four.split()
+            self.n_spots = int(line_four_split[0])
+            # Remove first item.
+            line_four_split.pop(0)
+            self.comment = ' '.join(line_four_split)
         except:
             return False
 
