@@ -11,7 +11,7 @@ import simi
 # Templates for spots.
 allspots_template =     '    <AllSpots nspots="{nspots}">'
 inframe_template =      '      <SpotsInFrame frame="{frame}">'
-spot_template =         '        <Spot ID="{id}" name="ID{id}" VISIBILITY="1" RADIUS="10.0" QUALITY="-1.0" SOURCE_ID="0" POSITION_T="{frame}.0" POSITION_X="{x}" POSITION_Y="{y}" FRAME="{frame}" POSITION_Z="{z}" />'
+spot_template =         '        <Spot ID="{id}" name="{name} SPOT_{id}" VISIBILITY="1" RADIUS="10.0" QUALITY="-1.0" SOURCE_ID="0" POSITION_T="{frame}.0" POSITION_X="{x}" POSITION_Y="{y}" FRAME="{frame}" POSITION_Z="{z}" />'
 inframe_end_template =  '      </SpotsInFrame>'
 allspots_end_template = '    </AllSpots>'
 
@@ -49,6 +49,8 @@ for key, cell in s.cells.items():
     for spot in cell.spots:
         # Define new id variable.
         spot.id = spot_id
+        # Define new cell variable.
+        spot.cell = key
         # Fix X value to MaMuT (based on CALIBRATION field of .sbc).
         spot.x = spot.x * 1.869565217
         # Fix Y value to MaMuT.
@@ -74,7 +76,7 @@ for frame, spots in enumerate(spots_per_frame):
     if spots:
         print(inframe_template.format(frame=frame))
         for mamut_spot in spots:
-            print(spot_template.format(id=mamut_spot.id, frame=mamut_spot.frame, x=mamut_spot.x, y=mamut_spot.y, z=mamut_spot.z))
+            print(spot_template.format(id=mamut_spot.id, name=mamut_spot.cell, frame=mamut_spot.frame, x=mamut_spot.x, y=mamut_spot.y, z=mamut_spot.z))
         print(inframe_end_template)
     else:
         print(inframe_template.format(frame=frame))
