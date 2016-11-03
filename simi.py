@@ -129,6 +129,12 @@ class Cell:
         self.comment = u''
         self.spots = []
 
+        # Unknown attributes.
+        self.line2_item0 = 0    # Mitosis ID?
+        self.line3_item1 = 0    # No idea, usually small numbers.
+        self.line3_item2 = 0    # Maybe fates defined in .sbc.
+        self.line3_item5 = 0    # Color, most likely.
+
         # TODO: Each cell has a parent and a sister. Extract such information
         # from the SBD file and add to cell attributes.
 
