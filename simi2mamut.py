@@ -25,6 +25,40 @@ alltracks_end_template =    '    </AllTracks>'
 # Templates for filtered tracks.
 filteredtracks_template = ' <FilteredTracks> <TrackID TRACK_ID="1" /> </FilteredTracks> '
 
+# Incomplete list of spiral edges.
+spiral_edges = [
+        ['ABCD', 'AB'],
+        ['ABCD', 'CD'],
+        ['AB', 'A'],
+        ['AB', 'B'],
+        ['CD', 'C'],
+        ['CD', 'D'],
+        ['A', '1A'],
+        ['A', '1a'],
+        ['B', '1B'],
+        ['B', '1b'],
+        ['C', '1C'],
+        ['C', '1c'],
+        ['D', '1D'],
+        ['D', '1d'],
+        ['1A', '2A'],
+        ['1A', '2a'],
+        ['1a', '1a1'],
+        ['1a', '1a2'],
+        ['1B', '2B'],
+        ['1B', '2b'],
+        ['1b', '1b1'],
+        ['1b', '1b2'],
+        ['1C', '2C'],
+        ['1C', '2c'],
+        ['1c', '1c1'],
+        ['1c', '1c2'],
+        ['1D', '2D'],
+        ['1D', '2d'],
+        ['1d', '1d1'],
+        ['1d', '1d2'],
+        ]
+
 # Parse a Simi BioCell .sbd file.
 s = simi.Sbd('lineage.sbd')
 
@@ -36,7 +70,8 @@ spot_id = 1
 last_frame = s.last_frame
 
 # Lists aggregating spots and edges.
-edges = []
+spot_edges = []
+cell_edges = {}
 
 # Build template for spots per frame.
 spots_per_frame = []
@@ -64,9 +99,15 @@ for key, cell in s.cells.items():
         # If not, create an edge (first spot is skipped).
         if spot_index != 0:
             # Create an edge using the previous spot as source and current spot as target.
-            edges.append(edge_template.format(source_id=spot_id-1, target_id=spot_id))
+            spot_edges.append(edge_template.format(source_id=spot_id-1, target_id=spot_id))
         # Increment unique spot id.
         spot_id += 1
+    # Define cell's source_id == the id of the last spot.
+    cell.source_id = cell.spots[-1].id
+    # Define cell's target_id == the id of the first spot.
+    cell.target_id = cell.spots[0].id
+    # Register the info in a dictionary.
+    cell_edges[cell.generic_name] = {'source_id': cell.source_id, 'target_id': cell.target_id}
 
 # Begin AllSpots.
 print(allspots_template.format(nspots=spot_id))
@@ -91,9 +132,16 @@ print(alltracks_template)
 # Begin Track.
 print(track_template.format(duration=last_frame, stop=last_frame, nspots=spot_id))
 
-# Loop through edges.
-for edge in edges:
+# Loop through spot edges.
+for edge in spot_edges:
     print(edge)
+
+# Loop through cell edges.
+for spiral_edge in spiral_edges:
+    if spiral_edge[0] in cell_edges.keys():
+        source = cell_edges[spiral_edge[0]]['source_id']
+        target = cell_edges[spiral_edge[1]]['target_id']
+        print(edge_template.format(source_id=source, target_id=target))
 
 # End Track.
 print(track_end_template)
