@@ -106,9 +106,9 @@ class Sbd:
         '''Output flat matrix files with all cells.'''
         matrix = open(outfile, 'w')
         # Write header.
-        matrix.write('{0},{1},{2},{3},{4},{5}\n'.format('generic_name', 'frame', 'mitosis', 'color', 'n_spots', 'custom_name'))
+        matrix.write('{0},{1},{2},{3},{4},{5}\n'.format('generic_name', 'birth_frame', 'gen_birth_time', 'color', 'n_spots', 'name'))
         for cell_id, cell in self.cells.items():
-            matrix.write('{0},{1},{2},{3},{4},{5}\n'.format(cell.generic_name, cell.frame, cell.mitosis, cell.color, cell.n_spots, cell.custom_name))
+            matrix.write('{0},{1},{2},{3},{4},{5}\n'.format(cell.generic_name, cell.birth_frame, cell.generation_birth_time, cell.color, cell.n_spots, cell.name))
         matrix.close()
 
 
@@ -118,22 +118,43 @@ class Cell:
         self.raw_data = raw_data
         self.valid = False
 
-        # Cell attributes.
+        # Cell attributes line 1. Setting the default values to None because
+        # the format uses 0 and -1 switches.
+        self.cells_left = None
+        self.cells_right = None
+        self.active_cells_left = None
+        self.active_cells_right = None
         self.generic_name = u''
-        self.mitosis = 0
-        self.frame = 0
-        self.last_frame = 0
-        self.color = 0
-        self.custom_name = u''
-        self.n_spots = 0
+
+        # Cell attributes line 2. Not sure what "generation" means, but it's
+        # not really used anyway.
+        self.generation_birth_time = None  # seconds (ms?)
+        self.generation_level = None
+        self.generation_wildtype = None
+        self.generation_color = None
+        #self.generation_name = u''  # ignore this
+
+        # Cell attributes line 3.
+        self.birth_frame = None  # frame
+        self.birth_level = None  # level (z) at mitosis
+        self.wildtype = None
+        self.size = None  # integer from BioCell
+        self.shape = None  # integer from BioCell
+        self.color = None  # decimal value #TODO convert to HEX.
+        self.name = u''  # custom name defined by user
+
+        # Cell attributes line 4.
+        self.n_spots = None
         self.comment = u''
+
+        # Cell attributes line 5 and beyond: please see class Spot. Spots are
+        # stored in a list.
         self.spots = []
 
-        # Unknown attributes.
-        self.line2_item0 = 0    # Mitosis ID?
-        self.line3_item1 = 0    # No idea, usually small numbers.
-        self.line3_item2 = 0    # Maybe fates defined in .sbc.
-        self.line3_item5 = 0    # Color, most likely.
+        # Additional attributes.
+        self.last_frame = None
+        self.parent = None
+        self.daughter = None
 
         # TODO: Each cell has a parent and a sister. Extract such information
         # from the SBD file and add to cell attributes.
@@ -145,47 +166,74 @@ class Cell:
         '''Extract attributes from raw data.'''
         split_lines = self.raw_data.split('\n')
 
-        # Generic name.
+        # Line one values.
         try:
             line_one = split_lines[0]
-            self.generic_name = line_one.split()[4]
+            line_one_split = line_one.split()
+            # Define variables.
+            self.cells_left = int(line_one_split[0])
+            self.cells_right = int(line_one_split[1])
+            self.active_cells_left = int(line_one_split[2])
+            self.active_cells_right = int(line_one_split[3])
+            self.generic_name = line_one_split[4]
         except:
+            print('Error parsing line 1!')
+            print(self.raw_data)
             return False
 
-        # Mitosis ID.
+        # Line two values.
         try:
             line_two = split_lines[1]
-            self.mitosis = int(line_two.split()[0])
+            line_two_split = line_two.split()
+            # Define variables.
+            self.generation_birth_time = int(line_two_split[0])
+            self.generation_level = int(line_two_split[1])
+            self.generation_wildtype = int(line_two_split[2])
+            self.generation_color = int(line_two_split[3])
+            #self.generation_name = line_two_split[4]  # ignore this
         except:
+            print('Error parsing line 2!')
+            print(self.raw_data)
             return False
 
-        # Frame, color and custom name.
+        # Line three values.
         try:
             line_three = split_lines[2]
-            self.frame = int(line_three.split()[0])
-            self.color = int(line_three.split()[5])
-            self.custom_name = line_three.split()[6]
+            line_three_split = line_three.split()
+            # Define variables.
+            self.birth_frame = int(line_three_split[0])
+            self.birth_level = int(line_three_split[1])
+            self.wildtype = int(line_three_split[2])
+            self.size = int(line_three_split[3])
+            self.shape = int(line_three_split[4])
+            self.color = int(line_three_split[5])
+            self.name = line_three_split[6]
         except:
+            print('Error parsing line 3!')
+            print(self.raw_data)
             return False
 
-        # Number of spots.
+        # Line four values.
         try:
             line_four = split_lines[3]
             line_four_split = line_four.split()
+            # Define variables.
             self.n_spots = int(line_four_split[0])
-            # Remove first item.
+            # Remove first item to join comment string.
             line_four_split.pop(0)
             self.comment = ' '.join(line_four_split)
         except:
+            print('Error parsing line 4!')
+            print(self.raw_data)
             return False
 
         # If there are no spots, invalid cell.
         if self.n_spots == 0:
             return False
         else:
-            # Position of last spot in the list.
-            last_spot_index = self.n_spots + 4
-            # Add spots one by one.
+            # Get the list index of the last spot in split_lines.
+            last_spot_index = 4 + self.n_spots
+            # Use the index to add the exact number of spots.
             for spot_line in split_lines[4:last_spot_index]:
                 new_spot = Spot(spot_line)
                 self.spots.append(new_spot)
@@ -201,7 +249,7 @@ class Cell:
     def print_data(self):
         '''Print out cell data.'''
         print('\nName: {0} ({1})\nFrame: {2}\nSpots: {3}'.format(
-            self.custom_name, self.generic_name, self.frame, self.n_spots))
+            self.name, self.generic_name, self.birth_frame, self.n_spots))
         print('\tframe\tx\ty\tz')
         for spot in self.spots:
             print('\t{0}\t{1}\t{2}\t{3}'.format(spot.frame, spot.x, spot.y, spot.z))
