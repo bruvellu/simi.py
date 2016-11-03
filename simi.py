@@ -132,7 +132,7 @@ class Cell:
         self.generation_level = None
         self.generation_wildtype = None
         self.generation_color = None
-        #self.generation_name = u''  # ignore this
+        self.generation_name = u''
 
         # Cell attributes line 3.
         self.birth_frame = None  # frame
@@ -166,48 +166,80 @@ class Cell:
         '''Extract attributes from raw data.'''
         split_lines = self.raw_data.split('\n')
 
+        # Cleanup enumerate variables.
+        index = None
+        value = None
+
         # Line one values.
         try:
             line_one = split_lines[0]
             line_one_split = line_one.split()
-            # Define variables.
-            self.cells_left = int(line_one_split[0])
-            self.cells_right = int(line_one_split[1])
-            self.active_cells_left = int(line_one_split[2])
-            self.active_cells_right = int(line_one_split[3])
-            self.generic_name = line_one_split[4]
+            # Loop to capture values.
+            for index, value in enumerate(line_one_split):
+                if index == 0:
+                    self.cells_left = int(value)
+                elif index == 1:
+                    self.cells_right = int(value)
+                elif index == 2:
+                    self.active_cells_left = int(value)
+                elif index == 3:
+                    self.active_cells_right = int(value)
+                elif index == 4:
+                    self.generic_name = value
         except:
             print('Error parsing line 1!')
             print(self.raw_data)
             return False
 
+        # Cleanup enumerate variables.
+        index = None
+        value = None
+
         # Line two values.
         try:
             line_two = split_lines[1]
             line_two_split = line_two.split()
-            # Define variables.
-            self.generation_birth_time = int(line_two_split[0])
-            self.generation_level = int(line_two_split[1])
-            self.generation_wildtype = int(line_two_split[2])
-            self.generation_color = int(line_two_split[3])
-            #self.generation_name = line_two_split[4]  # ignore this
+            # Loop to capture values.
+            for index, value in enumerate(line_two_split):
+                if index == 0:
+                    self.generation_birth_time = int(value)
+                elif index == 1:
+                    self.generation_level = int(value)
+                elif index == 2:
+                    self.generation_wildtype = int(value)
+                elif index == 3:
+                    self.generation_color = int(value)
+                elif index == 4:
+                    self.generation_name = value
         except:
             print('Error parsing line 2!')
             print(self.raw_data)
             return False
 
+        # Cleanup enumerate variables.
+        index = None
+        value = None
+
         # Line three values.
         try:
             line_three = split_lines[2]
             line_three_split = line_three.split()
-            # Define variables.
-            self.birth_frame = int(line_three_split[0])
-            self.birth_level = int(line_three_split[1])
-            self.wildtype = int(line_three_split[2])
-            self.size = int(line_three_split[3])
-            self.shape = int(line_three_split[4])
-            self.color = int(line_three_split[5])
-            self.name = line_three_split[6]
+            # Loop to capture values.
+            for index, value in enumerate(line_three_split):
+                if index == 0:
+                    self.birth_frame = int(value)
+                elif index == 1:
+                    self.birth_level = int(value)
+                elif index == 2:
+                    self.wildtype = int(value)
+                elif index == 3:
+                    self.size = int(value)
+                elif index == 4:
+                    self.shape = int(value)
+                elif index == 5:
+                    self.color = int(value)
+                elif index == 6:
+                    self.name = value
         except:
             print('Error parsing line 3!')
             print(self.raw_data)
