@@ -78,7 +78,7 @@ class Sbd:
         # Temporary buffer for each line of a cell record.
         tmp_cell = ''
         # Read SBD file line by line.
-        for line in self.sbd_file.readlines():
+        for line in self.sbd_file.readlines()[7:]:  # skip headers
             if line.startswith('---'):
                 if tmp_cell:
                     # Create cell instance with raw data.
@@ -162,13 +162,15 @@ class Cell:
         # Parse data, any error returns False (invalid).
         self.valid = self.parse_data()
 
+        if self.cells_right > 1:
+            print(self.generic_name, len(self.spots), self.valid)
+            print(self.cells_left, self.cells_right, self.active_cells_left, self.active_cells_right)
+            print
+
+
     def parse_data(self):
         '''Extract attributes from raw data.'''
         split_lines = self.raw_data.split('\n')
-
-        # Cleanup enumerate variables.
-        index = None
-        value = None
 
         # Line one values.
         try:
@@ -191,10 +193,6 @@ class Cell:
             print(self.raw_data)
             return False
 
-        # Cleanup enumerate variables.
-        index = None
-        value = None
-
         # Line two values.
         try:
             line_two = split_lines[1]
@@ -215,10 +213,6 @@ class Cell:
             print('Error parsing line 2!')
             print(self.raw_data)
             return False
-
-        # Cleanup enumerate variables.
-        index = None
-        value = None
 
         # Line three values.
         try:
