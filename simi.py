@@ -310,6 +310,7 @@ class Cell:
             # Use the index to add the exact number of spots.
             for spot_line in split_lines[4:last_spot_index]:
                 new_spot = Spot(spot_line)
+                new_spot.cell = self
                 self.spots.append(new_spot)
                 self.update_last_frame(new_spot)
             # Change status to valid.
@@ -333,6 +334,7 @@ class Spot:
     '''A spot is a manually tracked point with x, y, z, t dimensions.'''
     def __init__(self, raw_data):
         self.raw_data = raw_data
+        self.cell = None
         self.valid = False
 
         # Spot attributes.
