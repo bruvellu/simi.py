@@ -77,15 +77,52 @@ class Sbd:
         '''Parse SBD information.'''
         # Temporary buffer for each line of a cell record.
         tmp_cell = ''
+        # Temporary switches for parenthood.
+        has_parent = False
+        parent_cell = None
+        # Store for generation birth time of right sibling cell.
+        sister_cells = {}
+
         # Read SBD file line by line.
         for line in self.sbd_file.readlines()[7:]:  # skip headers
             if line.startswith('---'):
                 if tmp_cell:
                     # Create cell instance with raw data.
                     cell = Cell(tmp_cell)
+
+                    # if cell.generic_name == '4b21':
+                        # import pdb; pdb.set_trace()
+
+                    # Define parent cell.
+                    if has_parent:
+                        cell.parent = parent_cell
+                        cell.parent.daughter = cell
+                    else:
+                        # If cell has a parent, but it's upstream in the lineage.
+                        if cell.generation_birth_time in sister_cells.keys():
+                            # Get common parent of sibling cells.
+                            common_parent = sister_cells[cell.generation_birth_time].parent
+                            cell.parent = common_parent
+
+                    # If cell has a left daughter, turn switch on and define parent.
+                    if cell.cells_left == 1:
+                        has_parent = True
+                        parent_cell = cell
+                    elif cell.cells_left == 0:
+                        has_parent = False
+                        parent_cell = None
+
+                    # If cell has a right daughter, add to the sibling dictionary.
+                    if cell.cells_right == 1:
+                        sister_cells[cell.generation_birth_time] = cell
+
+                    if not cell.parent:
+                        print(cell.generic_name, cell.parent)
+
                     # If cell is valid, add it to list.
                     if cell.valid:
                         self.add_cell(cell)
+
                     # Clean temporary cell.
                     tmp_cell = ''
             else:
@@ -162,10 +199,10 @@ class Cell:
         # Parse data, any error returns False (invalid).
         self.valid = self.parse_data()
 
-        if self.cells_right > 1:
-            print(self.generic_name, len(self.spots), self.valid)
-            print(self.cells_left, self.cells_right, self.active_cells_left, self.active_cells_right)
-            print
+        # if self.cells_right > 1:
+            # print(self.generic_name, len(self.spots), self.valid)
+            # print(self.cells_left, self.cells_right, self.active_cells_left, self.active_cells_right)
+            # print
 
 
     def parse_data(self):
