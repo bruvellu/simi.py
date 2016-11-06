@@ -71,7 +71,7 @@ last_frame = s.last_frame
 
 # Lists aggregating spots and edges.
 spot_edges = []
-cell_edges = {}
+cell_edges = []
 
 # Build template for spots per frame.
 spots_per_frame = []
@@ -106,8 +106,8 @@ for key, cell in s.cells.items():
     cell.source_id = cell.spots[-1].id
     # Define cell's target_id == the id of the first spot.
     cell.target_id = cell.spots[0].id
-    # Register the info in a dictionary.
-    cell_edges[cell.generic_name] = {'source_id': cell.source_id, 'target_id': cell.target_id}
+    # Append cells to generate cell edges.
+    cell_edges.append(cell)
 
 # Begin AllSpots.
 print(allspots_template.format(nspots=spot_id))
@@ -137,11 +137,13 @@ for edge in spot_edges:
     print(edge)
 
 # Loop through cell edges.
-for spiral_edge in spiral_edges:
-    if spiral_edge[0] in cell_edges.keys():
-        source = cell_edges[spiral_edge[0]]['source_id']
-        target = cell_edges[spiral_edge[1]]['target_id']
-        print(edge_template.format(source_id=source, target_id=target))
+for cell in cell_edges:
+    if cell.parent:
+        try:
+            print(edge_template.format(source_id=cell.parent.source_id, target_id=cell.target_id))
+        except:
+            pass
+            # print(cell.parent.generic_name, 'HAS NO SOURCE_ID')
 
 # End Track.
 print(track_end_template)
