@@ -59,8 +59,18 @@ class Sbd:
     '''Database file for Simi BioCell.'''
     def __init__(self, sbd_file):
         self.sbd_file = self.open_sbd(sbd_file)
+
+        # Main dictionary with valid cells.
         self.cells = {}
-        self.last_frame = 0
+
+        # Dictionary for invalid cells (=without spots).
+        self.invalid_cells = {}
+
+        # Flat list of valid cells in the original order.
+        self.list_of_cells = []
+
+        # Last frame of the recording.
+        self.last_frame = 0  # TODO: get from sbc?
 
         # Parse file.
         self.parse_sbd()
@@ -116,12 +126,11 @@ class Sbd:
                     if cell.cells_right == 1:
                         sister_cells[cell.generation_birth_time] = cell
 
-                    if not cell.parent:
-                        print(cell.generic_name, cell.parent)
-
                     # If cell is valid, add it to list.
                     if cell.valid:
                         self.add_cell(cell)
+                    else:
+                        self.invalid_cells[cell.generic_name] = cell
 
                     # Clean temporary cell.
                     tmp_cell = ''
@@ -130,14 +139,23 @@ class Sbd:
                 tmp_cell = tmp_cell + line
 
     def add_cell(self, cell):
-        '''Add new cell to list of cells.'''
+        '''Add new cell to main dictionary and list of valid cells.'''
         self.cells[cell.generic_name] = cell
+        self.list_of_cells.append(cell)
         self.update_last_frame(cell)
 
     def update_last_frame(self, cell):
         '''Updates the last_frame value for the simi instance.'''
         if cell.last_frame > self.last_frame:
             self.last_frame = cell.last_frame
+
+    def get_cells_without_parent(self):
+        '''Returns a list of valid cells that have no parent.'''
+        no_parent = []
+        for cell in self.list_of_cells:
+            if not cell.parent:
+                no_parent.append(cell)
+        return no_parent
 
     def write_matrix(self, outfile):
         '''Output flat matrix files with all cells.'''
