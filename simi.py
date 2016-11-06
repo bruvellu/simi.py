@@ -53,7 +53,6 @@ Usage:
 #   - Read and parse .sbc information.
 #   - SimiProject class to integrate data from .sbc and .sbd files.
 #   - Identify and write parsers for all the .sbd fields.
-#   - Reconstruct parent children hierarchy.
 
 class Sbd:
     '''Database file for Simi BioCell.'''
@@ -99,6 +98,7 @@ class Sbd:
                 if tmp_cell:
                     # Create cell instance with raw data.
                     cell = Cell(tmp_cell)
+                    cell.sbd = self
 
                     # if cell.generic_name == '4b21':
                         # import pdb; pdb.set_trace()
@@ -171,6 +171,8 @@ class Cell:
     '''Store all cell-related information'''
     def __init__(self, raw_data):
         self.raw_data = raw_data
+        self.sbd = None
+        self.sbc = None  # TODO: not defined yet.
         self.valid = False
 
         # Cell attributes line 1. Setting the default values to None because
@@ -211,17 +213,8 @@ class Cell:
         self.parent = None
         self.daughter = None
 
-        # TODO: Each cell has a parent and a sister. Extract such information
-        # from the SBD file and add to cell attributes.
-
         # Parse data, any error returns False (invalid).
         self.valid = self.parse_data()
-
-        # if self.cells_right > 1:
-            # print(self.generic_name, len(self.spots), self.valid)
-            # print(self.cells_left, self.cells_right, self.active_cells_left, self.active_cells_right)
-            # print
-
 
     def parse_data(self):
         '''Extract attributes from raw data.'''
