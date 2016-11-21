@@ -48,6 +48,8 @@ Usage:
 
 '''
 
+from collections import OrderedDict
+
 # TODO:
 #
 #   - Read and parse .sbc information.
@@ -59,20 +61,24 @@ class Sbd:
     def __init__(self, sbd_file):
         self.sbd_file = self.open_sbd(sbd_file)
 
+        # Main dictionary with all cells.
+        self.cells = OrderedDict()
+
         # Main dictionary with valid cells.
-        self.cells = {}
+        self.valid_cells = OrderedDict()
 
         # Dictionary for invalid cells (=without spots).
-        self.invalid_cells = {}
-
-        # Flat list of valid cells in the original order.
-        self.list_of_cells = []
+        self.invalid_cells = OrderedDict()
 
         # Last frame of the recording.
         self.last_frame = 0  # TODO: get from sbc?
 
         # Parse file.
         self.parse_sbd()
+
+        # Generate descendants.
+        for name, cell in self.cells.iteritems():
+            cell.get_descendants()
 
     def open_sbd(self, filepath):
         '''Get user input, save abspath and try to read file.'''
@@ -124,9 +130,13 @@ class Sbd:
                     if cell.cells_right == 1:
                         sister_cells[cell.generation_birth_time] = cell
 
+                    # Add cell to main dictionary.
+                    self.cells[cell.generic_name] = cell
+
                     # If cell is valid, add it to list.
                     if cell.valid:
-                        self.add_cell(cell)
+                        self.valid_cells[cell.generic_name] = cell
+                        self.update_last_frame(cell)
                     else:
                         self.invalid_cells[cell.generic_name] = cell
 
@@ -135,12 +145,6 @@ class Sbd:
             else:
                 # Add next line to cell data.
                 tmp_cell = tmp_cell + line
-
-    def add_cell(self, cell):
-        '''Add new cell to main dictionary and list of valid cells.'''
-        self.cells[cell.generic_name] = cell
-        self.list_of_cells.append(cell)
-        self.update_last_frame(cell)
 
     def update_last_frame(self, cell):
         '''Updates the last_frame value for the simi instance.'''
@@ -210,6 +214,10 @@ class Cell:
         self.last_frame = None
         self.parent = None
         self.daughters = []
+
+        # Traverse values.
+        self.parents = {}
+        self.descendants = {}
 
         # Parse data, any error returns False (invalid).
         self.valid = self.parse_data()
@@ -318,6 +326,23 @@ class Cell:
         '''Updates the last_frame value for the cell.'''
         if spot.frame > self.last_frame:
             self.last_frame = spot.frame
+
+    def get_descendants(self):
+        '''Returns the descendants.
+
+        This function calculates the descendants for all the descendants
+        recursively.  It can be used as an initial method to populate the
+        descendants or to get the current descendants of a cell.
+
+        A dictionary is returned.
+        '''
+        # Iterate through daughter cells.
+        for child in self.daughters:
+            # Add child to dictionary.
+            self.descendants[child.generic_name] = child
+            # Descend in the tree.
+            self.descendants.update(child.get_descendants())
+        return self.descendants
 
     def print_data(self):
         '''Print out cell data.'''
