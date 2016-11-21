@@ -100,19 +100,17 @@ class Sbd:
                     cell = Cell(tmp_cell)
                     cell.sbd = self
 
-                    # if cell.generic_name == '4b21':
-                        # import pdb; pdb.set_trace()
-
                     # Define parent cell.
                     if has_parent:
                         cell.parent = parent_cell
-                        cell.parent.daughter = cell
+                        cell.parent.daughters.append(cell)
                     else:
                         # If cell has a parent, but it's upstream in the lineage.
                         if cell.generation_birth_time in sister_cells.keys():
                             # Get common parent of sibling cells.
                             common_parent = sister_cells[cell.generation_birth_time].parent
                             cell.parent = common_parent
+                            cell.parent.daughters.append(cell)
 
                     # If cell has a left daughter, turn switch on and define parent.
                     if cell.cells_left == 1:
@@ -211,7 +209,7 @@ class Cell:
         # Additional attributes.
         self.last_frame = None
         self.parent = None
-        self.daughter = None
+        self.daughters = []
 
         # Parse data, any error returns False (invalid).
         self.valid = self.parse_data()
