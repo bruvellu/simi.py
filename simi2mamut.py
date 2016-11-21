@@ -62,9 +62,6 @@ spiral_edges = [
 # Parse a Simi BioCell .sbd file.
 s = simi.Sbd('lineage.sbd')
 
-# Get a small list of cells (temporary for testing).
-#cells = [s.cells['A'], s.cells['B'], s.cells['C'], s.cells['D']]
-
 # Declare initial variables.
 spot_id = 1
 last_frame = s.last_frame
@@ -143,11 +140,9 @@ for cell in cell_edges:
             print(edge_template.format(source_id=cell.parent.source_id, target_id=cell.target_id))
         except:
             pass
-            # print(cell.parent.generic_name, 'HAS NO SOURCE_ID')
 
 # End Track.
 print(track_end_template)
 
 # End AllTracks.
 print(alltracks_end_template)
-
