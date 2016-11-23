@@ -223,7 +223,7 @@ class Cell:
         # Cell attributes line 3.
         self.birth_frame = None  # frame
         self.birth_level = None  # level (z) at mitosis
-        self.wildtype = None
+        self.wildtype = None  # fate of the cell, check .sbc for list
         self.size = None  # integer from BioCell
         self.shape = None  # integer from BioCell
         self.color = None  # decimal value #TODO convert to HEX.
