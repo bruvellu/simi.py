@@ -49,6 +49,9 @@ class Sbc:
         # Main dictionary with all settings.
         self.settings = {}
 
+        # Parse data.
+        self.parse_sbc()
+
     def open_sbc(self, filepath):
         '''Save abspath and try to read file.'''
         try:
@@ -63,7 +66,6 @@ class Sbc:
         current_setting = u''
         # Read SBC file line by line.
         for line in self.sbc_file.readlines():
-            print(line)
             if line.startswith(';') or line.startswith('\r'):
                 continue
             else:
