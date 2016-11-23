@@ -41,6 +41,42 @@ from collections import OrderedDict
 #   - SimiProject class to integrate data from .sbc and .sbd files.
 #   - Identify and write parsers for all the .sbd fields.
 
+class Sbc:
+    '''Settings file for Simi BioCell.'''
+    def __init__(self, sbc_file):
+        self.sbc_file = self.open_sbc(sbc_file)
+
+        # Main dictionary with all settings.
+        self.settings = {}
+
+    def open_sbc(self, filepath):
+        '''Save abspath and try to read file.'''
+        try:
+            sbc_file = open(filepath)
+            return sbc_file
+        except:
+            print('Could not load the file "{0}"'.format(filepath))
+
+    def parse_sbc(self):
+        '''Parse SBD information.'''
+        # Stores the current setting.
+        current_setting = u''
+        # Read SBC file line by line.
+        for line in self.sbc_file.readlines():
+            print(line)
+            if line.startswith(';') or line.startswith('\r'):
+                continue
+            else:
+                if line.startswith('['):
+                    current_setting = line.strip('[]\r\n')
+                    self.settings[current_setting] = {}
+                else:
+                    splitted = line.split('=')
+                    key = splitted[0]
+                    value = splitted[1].strip('\r\n')
+                    self.settings[current_setting][key] = value
+
+
 
 class Sbd:
     '''Database file for Simi BioCell.'''
