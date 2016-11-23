@@ -2,11 +2,11 @@
 
 '''Read and access cell lineage data from Simi BioCell.
 
-This is a small library to parse SBD files from Simi*BioCell. It collects
-relevant data such as cell name, time point and coordinates for all the cell
-lineage data points. The goal is to provide an easy interface to access Simi
-data and allow better interoperability with more recent software for cell
-lineage data analyses.
+Small library to parse Simi*BioCell project files (.sbc and .sbd). It collects
+all the relevant cell lineage data such as cell name, frame and coordinates,
+and provides a programmatic interface to access the data. In this manner the
+data can be analyzed by custom functions, or exported to different formats for
+data analyses in more up-to-date cell lineage software.
 
 Usage:
 
@@ -31,21 +31,6 @@ Usage:
     cell.spots
     [<spot1>, <spot2>, <spot3>]
 
-    # Print out cell data.
-    cell.print_data()
-
-    Name: 1b1 (1b1)
-    Frame: 198
-    Spots: 7
-            frame	x	y	z
-            198	390	323	16
-            213	407	332	19
-            228	403	332	16
-            243	394	326	14
-            252	394	332	15
-            258	394	331	13
-            273	393	333	14
-
 '''
 
 from collections import OrderedDict
@@ -55,6 +40,7 @@ from collections import OrderedDict
 #   - Read and parse .sbc information.
 #   - SimiProject class to integrate data from .sbc and .sbd files.
 #   - Identify and write parsers for all the .sbd fields.
+
 
 class Sbd:
     '''Database file for Simi BioCell.'''
@@ -79,6 +65,9 @@ class Sbd:
         # Generate descendants.
         for name, cell in self.cells.iteritems():
             cell.get_descendants()
+
+    def __str__(self):
+        return self.sbd_file.name
 
     def open_sbd(self, filepath):
         '''Get user input, save abspath and try to read file.'''
@@ -221,6 +210,9 @@ class Cell:
 
         # Parse data, any error returns False (invalid).
         self.valid = self.parse_data()
+
+    def __str__(self):
+        return 'CELL={name}'.format(name=self.generic_name)
 
     def parse_data(self):
         '''Extract attributes from raw data.'''
@@ -368,6 +360,10 @@ class Spot:
 
         # Parse and validate data.
         self.valid = self.parse_data()
+
+    def __str__(self):
+        return 'CELL={cell} FRAME={frame} X={x} Y={y} Z={z}'.format(
+                cell=self.cell.generic_name, frame=self.frame, x=self.x, y=self.y, z=self.z)
 
     def parse_data(self):
         '''Parse spot coordinates.'''
