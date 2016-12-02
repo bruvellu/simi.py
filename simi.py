@@ -41,6 +41,14 @@ from collections import OrderedDict
 #   - SimiProject class to integrate data from .sbc and .sbd files.
 #   - Identify and write parsers for all the .sbd fields.
 
+
+class SimiProject:
+    '''Simi BioCell project file.'''
+    def __init__(self, sbc_file, sbd_file):
+        self.sbc = Sbc(sbc_file)
+        self.sbd = Sbd(sbd_file)
+
+
 class Sbc:
     '''Settings file for Simi BioCell.'''
     def __init__(self, sbc_file):
