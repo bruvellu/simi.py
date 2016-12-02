@@ -34,12 +34,16 @@ Usage:
 '''
 
 from collections import OrderedDict
+from os.path import splitext
 
 # TODO:
 #
 #   - Read and parse .sbc information.
 #   - SimiProject class to integrate data from .sbc and .sbd files.
 #   - Identify and write parsers for all the .sbd fields.
+
+MATRIX_HEADER = 'embryo,quadrant,cell,frame,x,y,z,parent,fate\n'
+MATRIX_ROW = '{embryo},{quadrant},{cell},{frame},{x},{y},{z},{parent},{fate}\n'
 
 
 class SimiProject:
@@ -198,9 +202,27 @@ class Sbd:
         '''Output flat matrix files with all cells.'''
         matrix = open(outfile, 'w')
         # Write header.
-        matrix.write('{0},{1},{2},{3},{4},{5}\n'.format('generic_name', 'birth_frame', 'gen_birth_time', 'color', 'n_spots', 'name'))
-        for cell_id, cell in self.cells.items():
-            matrix.write('{0},{1},{2},{3},{4},{5}\n'.format(cell.generic_name, cell.birth_frame, cell.generation_birth_time, cell.color, cell.n_spots, cell.name))
+        matrix.write(MATRIX_HEADER)
+        for cell_key, cell in self.cells.items():
+            if cell.valid:
+                quadrant = cell.get_quadrant()
+                embryo = splitext(cell.sbd.sbd_file.name)[0]
+                if cell.parent:
+                    parent = cell.parent.generic_name
+                else:
+                    parent = ''
+                for spot in cell.spots:
+                    matrix.write(MATRIX_ROW.format(
+                        embryo=embryo,
+                        quadrant=quadrant,
+                        cell=cell.generic_name,
+                        frame=spot.frame,
+                        x=spot.x,
+                        y=spot.y,
+                        z=spot.z,
+                        parent=parent,
+                        fate=cell.wildtype,
+                        ))
         matrix.close()
 
 
@@ -381,6 +403,17 @@ class Cell:
             # Descend in the tree.
             self.descendants.update(child.get_descendants())
         return self.descendants
+
+    def get_quadrant(self):
+        '''Returns the quadrant of a cell.'''
+        if 'a' in self.generic_name.lower():
+            return 'A'
+        elif 'b' in self.generic_name.lower():
+            return 'B'
+        elif 'c' in self.generic_name.lower():
+            return 'C'
+        elif 'd' in self.generic_name.lower():
+            return 'D'
 
     def print_data(self):
         '''Print out cell data.'''
