@@ -6,40 +6,6 @@ from mamut_xml_templates import *
 # TODO:
 #   - This script should ultimately be a function within simi.py
 
-# Incomplete list of spiral edges.
-spiral_edges = [
-        ['ABCD', 'AB'],
-        ['ABCD', 'CD'],
-        ['AB', 'A'],
-        ['AB', 'B'],
-        ['CD', 'C'],
-        ['CD', 'D'],
-        ['A', '1A'],
-        ['A', '1a'],
-        ['B', '1B'],
-        ['B', '1b'],
-        ['C', '1C'],
-        ['C', '1c'],
-        ['D', '1D'],
-        ['D', '1d'],
-        ['1A', '2A'],
-        ['1A', '2a'],
-        ['1a', '1a1'],
-        ['1a', '1a2'],
-        ['1B', '2B'],
-        ['1B', '2b'],
-        ['1b', '1b1'],
-        ['1b', '1b2'],
-        ['1C', '2C'],
-        ['1C', '2c'],
-        ['1c', '1c1'],
-        ['1c', '1c2'],
-        ['1D', '2D'],
-        ['1D', '2d'],
-        ['1d', '1d1'],
-        ['1d', '1d2'],
-        ]
-
 # Parse a Simi BioCell .sbd file.
 s = simi.Sbd('lineage.sbd')
 
