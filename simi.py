@@ -36,14 +36,8 @@ Usage:
 from collections import OrderedDict
 from os.path import splitext
 
-# TODO:
-#
-#   - Read and parse .sbc information.
-#   - SimiProject class to integrate data from .sbc and .sbd files.
-#   - Identify and write parsers for all the .sbd fields.
-
-MATRIX_HEADER = 'embryo,quadrant,cell,frame,x,y,z,parent,fate\n'
-MATRIX_ROW = '{embryo},{quadrant},{cell},{frame},{x},{y},{z},{parent},{fate}\n'
+MATRIX_HEADER = 'embryo,quadrant,quartet,cell,frame,x,y,z,parent,fate\n'
+MATRIX_ROW = '{embryo},{quadrant},{quartet},{cell},{frame},{x},{y},{z},{parent},{fate}\n'
 
 
 class SimiProject:
@@ -206,6 +200,7 @@ class Sbd:
         for cell_key, cell in self.cells.items():
             if cell.valid:
                 quadrant = cell.get_quadrant()
+                quartet = cell.get_quartet()
                 embryo = splitext(cell.sbd.sbd_file.name)[0]
                 if cell.parent:
                     parent = cell.parent.generic_name
@@ -215,6 +210,7 @@ class Sbd:
                     matrix.write(MATRIX_ROW.format(
                         embryo=embryo,
                         quadrant=quadrant,
+                        quartet=quartet,
                         cell=cell.generic_name,
                         frame=spot.frame,
                         x=spot.x,
@@ -406,14 +402,30 @@ class Cell:
 
     def get_quadrant(self):
         '''Returns the quadrant of a cell.'''
-        if 'a' in self.generic_name.lower():
+        cell = self.generic_name.lower()
+        if cell == 'ab' or cell == 'cd':
+            return ''
+        elif 'a' in cell:
             return 'A'
-        elif 'b' in self.generic_name.lower():
+        elif 'b' in cell:
             return 'B'
-        elif 'c' in self.generic_name.lower():
+        elif 'c' in cell:
             return 'C'
-        elif 'd' in self.generic_name.lower():
+        elif 'd' in cell:
             return 'D'
+
+    def get_quartet(self):
+        '''Returns the quartet of a cell.'''
+        cell = self.generic_name
+        if cell == 'AB' or cell == 'CD':
+            return ''
+        quartet = ''
+        if self.generic_name.islower():
+            return cell.replace('a', 'q').replace('b', 'q').replace('c', 'q').replace('d', 'q')
+        elif self.generic_name.isupper():
+            return cell.replace('A', 'Q').replace('B', 'Q').replace('C', 'Q').replace('D', 'Q')
+        else:
+            return ''
 
     def print_data(self):
         '''Print out cell data.'''
