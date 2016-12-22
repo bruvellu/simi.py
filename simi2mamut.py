@@ -7,11 +7,11 @@ from mamut_xml_templates import *
 #   - This script should ultimately be a function within simi.py
 
 # Parse a Simi BioCell .sbd file.
-s = simi.Sbd('lineage.sbd')
+s = simi.SimiProject('lineage.sbc', 'lineage.sbd')
 
 # Declare initial variables.
 spot_id = 1
-last_frame = s.last_frame
+last_frame = s.sbd.last_frame
 
 # Lists aggregating spots and edges.
 cell_edges = []
@@ -22,7 +22,7 @@ for f in range(0, last_frame + 1):
     spots_per_frame.append([])
 
 # Iterate through cells.
-for key, cell in s.valid_cells.items():
+for key, cell in s.sbd.valid_cells.items():
     # Define a list of edges.
     cell.spot_edges = []
     # Iterate through cell spots.
@@ -80,7 +80,7 @@ print(alltracks_template)
 print(track_template.format(id=0, duration=last_frame, stop=last_frame, nspots=spot_id))
 
 # Get list of CD descendants.
-cd = s.cells['CD'].get_descendants()
+cd = s.sbd.cells['CD'].get_descendants()
 
 # Loop through cells printing cell and spot edges.
 for cell in cell_edges:
@@ -112,7 +112,7 @@ print(track_end_template)
 print(track_template.format(id=1, duration=last_frame, stop=last_frame, nspots=spot_id))
 
 # Get list of AB descendants.
-ab = s.cells['AB'].get_descendants()
+ab = s.sbd.cells['AB'].get_descendants()
 
 # Loop through cells printing cell and spot edges.
 for cell in cell_edges:
