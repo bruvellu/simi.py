@@ -7,30 +7,6 @@ all the relevant cell lineage data such as cell name, frame and coordinates,
 and provides a programmatic interface to access the data. In this manner the
 data can be analyzed by custom functions, or exported to different formats for
 data analyses in more up-to-date cell lineage software.
-
-Usage:
-
-    # Load library.
-    import simi
-
-    # Parse a Simi BioCell .sbd file.
-    s = simi.Sbd('lineage.sbd')
-
-    # Access all cells.
-    s.cells
-    [<cell1>, <cell2>, <cell3>]
-
-    # Access cell data.
-    cell = s.cells[0]
-    cell.generic_name
-    '1b1'
-
-    cell.frame
-    198
-
-    cell.spots
-    [<spot1>, <spot2>, <spot3>]
-
 '''
 
 from collections import OrderedDict
