@@ -1,30 +1,10 @@
 import simi
+from mamut_xml_templates import *
 
 # Convert Simi data into MaMuT XML format.
 
 # TODO:
-#   - Put templates in separate file.
-#   - Organize files in 4 tracks, one for each quadrant.
 #   - This script should ultimately be a function within simi.py
-#   - How to connect the cell hierarchy?
-
-# Templates for spots.
-allspots_template =     '    <AllSpots nspots="{nspots}">'
-inframe_template =      '      <SpotsInFrame frame="{frame}">'
-spot_template =         '        <Spot ID="{id}" name="{name} SPOT_{id}" VISIBILITY="1" RADIUS="10.0" QUALITY="-1.0" SOURCE_ID="0" POSITION_T="{frame}.0" POSITION_X="{x}" POSITION_Y="{y}" FRAME="{frame}" POSITION_Z="{z}" />'
-inframe_end_template =  '      </SpotsInFrame>'
-allspots_end_template = '    </AllSpots>'
-inframe_empty_template = '     <SpotsInFrame frame="{frame}" />'
-
-# Templates for tracks and edges.
-alltracks_template =        '    <AllTracks>'
-track_template =            '      <Track name="Track_{id}" TRACK_INDEX="{id}" TRACK_ID="{id}" TRACK_DURATION="{duration}.0" TRACK_START="0.0" TRACK_STOP="{stop}.0" TRACK_DISPLACEMENT="1.00000000000000" NUMBER_SPOTS="{nspots}" NUMBER_GAPS="0" LONGEST_GAP="0" NUMBER_SPLITS="0" NUMBER_MERGES="0" NUMBER_COMPLEX="0" DIVISION_TIME_MEAN="NaN" DIVISION_TIME_STD="NaN">'
-edge_template =             '        <Edge SPOT_SOURCE_ID="{source_id}" SPOT_TARGET_ID="{target_id}" LINK_COST="-1.0" VELOCITY="1.000000000000000" DISPLACEMENT="1.000000000000000" />'
-track_end_template =        '      </Track>'
-alltracks_end_template =    '    </AllTracks>'
-
-# Templates for filtered tracks.
-filteredtracks_template = ' <FilteredTracks> <TrackID TRACK_ID="1" /> </FilteredTracks> '
 
 # Incomplete list of spiral edges.
 spiral_edges = [
@@ -108,6 +88,9 @@ for key, cell in s.valid_cells.items():
     # Append cells to generate cell edges.
     cell_edges.append(cell)
 
+# Begin XML file.
+print(begin_template)
+
 # Begin AllSpots.
 print(allspots_template.format(nspots=spot_id))
 
@@ -181,3 +164,7 @@ print(track_end_template)
 
 # End AllTracks.
 print(alltracks_end_template)
+
+# End XML file.
+print(end_template)
+
