@@ -168,7 +168,7 @@ class Sbd:
                 no_parent.append(cell)
         return no_parent
 
-    def write_matrix(self, outfile):
+    def write_matrix(self, outfile, cell_matrix=False):
         '''Output flat matrix files with all cells.'''
         matrix = open(outfile, 'w')
         # Write header.
@@ -182,19 +182,34 @@ class Sbd:
                     parent = cell.parent.generic_name
                 else:
                     parent = ''
-                for spot in cell.spots:
+                if cell_matrix:
+                    first_spot = cell.spots[0]
                     matrix.write(MATRIX_ROW.format(
                         embryo=embryo,
                         quadrant=quadrant,
                         quartet=quartet,
                         cell=cell.generic_name,
-                        frame=spot.frame,
-                        x=spot.x,
-                        y=spot.y,
-                        z=spot.z,
+                        frame=cell.birth_frame,
+                        x=first_spot.x,
+                        y=first_spot.y,
+                        z=first_spot.z,
                         parent=parent,
                         fate=cell.wildtype,
                         ))
+                else:
+                    for spot in cell.spots:
+                        matrix.write(MATRIX_ROW.format(
+                            embryo=embryo,
+                            quadrant=quadrant,
+                            quartet=quartet,
+                            cell=cell.generic_name,
+                            frame=spot.frame,
+                            x=spot.x,
+                            y=spot.y,
+                            z=spot.z,
+                            parent=parent,
+                            fate=cell.wildtype,
+                            ))
         matrix.close()
 
 
