@@ -173,7 +173,9 @@ class Sbd:
         matrix = open(outfile, 'w')
         # Write header.
         matrix.write(MATRIX_HEADER)
+        # Iterate over each cell.
         for cell_key, cell in self.cells.items():
+            # Only capture valid cells.
             if cell.valid:
                 quadrant = cell.get_quadrant()
                 quartet = cell.get_quartet()
@@ -182,6 +184,7 @@ class Sbd:
                     parent = cell.parent.generic_name
                 else:
                     parent = ''
+                # Write a cell matrix (only use coordinates from first spot).
                 if cell_matrix:
                     first_spot = cell.spots[0]
                     matrix.write(MATRIX_ROW.format(
@@ -197,6 +200,7 @@ class Sbd:
                         fate=cell.wildtype,
                         ))
                 else:
+                    # Write matrix for all spots.
                     for spot in cell.spots:
                         matrix.write(MATRIX_ROW.format(
                             embryo=embryo,
