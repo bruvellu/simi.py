@@ -12,15 +12,23 @@ data analyses in more up-to-date cell lineage software.
 from collections import OrderedDict
 from os.path import splitext
 
+# Constants.
 MATRIX_HEADER = 'embryo,quadrant,quartet,cell,frame,x,y,z,parent,fate\n'
 MATRIX_ROW = '{embryo},{quadrant},{quartet},{cell},{frame},{x},{y},{z},{parent},{fate}\n'
+IMAGE_WIDTH = 1376
+IMAGE_HEIGHT = 1040
 
 
 class SimiProject:
     '''Simi BioCell project file.'''
     def __init__(self, sbc_file, sbd_file):
+        #TODO Decide upon dependency and which to load first.
         self.sbc = Sbc(sbc_file)
         self.sbd = Sbd(sbd_file)
+
+        # Declare reciprocal dependency. #FIXME
+        self.sbc.sbd = self.sbd
+        self.sbd.sbc = self.sbc
 
 
 class Sbc:
@@ -88,6 +96,11 @@ class Sbd:
 
     def __str__(self):
         return self.sbd_file.name
+
+    def get_calibration_factor(self):
+        '''Calculate calibration factor for coordinates.'''
+        # Only based on WIDTH, but should be ok.
+        return IMAGE_WIDTH / float(self.sbc.settings['CALIBRATION']['WIDTH'])
 
     def open_sbd(self, filepath):
         '''Get user input, save abspath and try to read file.'''
@@ -170,6 +183,10 @@ class Sbd:
 
     def write_matrix(self, outfile, cell_matrix=False):
         '''Output flat matrix files with all cells.'''
+        # First, get calibration factor.
+        calibration = self.get_calibration_factor()
+
+        # Start writing to file.
         matrix = open(outfile, 'w')
         # Write header.
         matrix.write(MATRIX_HEADER)
@@ -193,8 +210,8 @@ class Sbd:
                         quartet=quartet,
                         cell=cell.generic_name,
                         frame=cell.birth_frame,
-                        x=first_spot.x,
-                        y=first_spot.y,
+                        x=first_spot.x * calibration,
+                        y=first_spot.y * calibration,
                         z=first_spot.z,
                         parent=parent,
                         fate=cell.wildtype,
@@ -208,8 +225,8 @@ class Sbd:
                             quartet=quartet,
                             cell=cell.generic_name,
                             frame=spot.frame,
-                            x=spot.x,
-                            y=spot.y,
+                            x=spot.x * calibration,
+                            y=spot.y * calibration,
                             z=spot.z,
                             parent=parent,
                             fate=cell.wildtype,
@@ -400,6 +417,8 @@ class Cell:
         cell = self.generic_name.lower()
         if cell == 'ab' or cell == 'cd':
             return ''
+        elif 'da' in cell:
+            return 'D'
         elif 'a' in cell:
             return 'A'
         elif 'b' in cell:
