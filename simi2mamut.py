@@ -22,6 +22,7 @@ def main():
     parser.add_argument('-d', '--sbd', help='.sbd file', required=True)
     parser.add_argument('-o', '--out', help='output file', required=True)
     parser.add_argument('-i', '--interpolate', help='interpolate spots', action='store_true')
+    parser.add_argument('-f', '--fraction', help='interpolate fraction (all=1.0, half=0.5)', default=1.0)
     args = parser.parse_args()
 
     # Parse a Simi BioCell .sbd file.
@@ -50,7 +51,7 @@ def main():
 
         # Get interpolated spots for every frame (best for MaMuT).
         if args.interpolate:
-            all_spots = cell.interpolate_spots()
+            all_spots = cell.interpolate_spots(float(args.fraction))
         # Or not.
         else:
             all_spots = cell.spots

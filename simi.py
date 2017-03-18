@@ -441,11 +441,14 @@ class Cell:
         else:
             return ''
 
-    def interpolate_spots(self):
+    def interpolate_spots(self, fraction=1.0):
         '''Interpolate spots to cover every frame.'''
         # In case there is only one spot.
         if len(self.spots) == 1:
             return self.spots
+        # Make sure fraction is correct. Failsafe to 1.0.
+        if fraction > 1.0 or fraction <= 0.0:
+            fraction = 1.0
         # Local list of spots and interpolated.
         spots = self.spots
         interpolated = []
@@ -466,13 +469,16 @@ class Cell:
             if n_spots == 1:
                 continue
 
+            # Fraction to interpolate all=1.0, half=0.5
+            n_spots_fraction = n_spots * fraction
+
             # Calculate interpolation values.
-            step_x = (next_spot.x - float(spot.x)) / n_spots
-            step_y = (next_spot.y - float(spot.y)) / n_spots
-            step_z = (next_spot.z - float(spot.z)) / n_spots
+            step_x = (next_spot.x - float(spot.x)) / n_spots_fraction
+            step_y = (next_spot.y - float(spot.y)) / n_spots_fraction
+            step_z = (next_spot.z - float(spot.z)) / n_spots_fraction
 
             # Create spots applying values.
-            for i in range(1, n_spots):
+            for i in range(1, int(n_spots_fraction)):
                 new_spot = Spot(parse=False)
                 new_spot.cell = self
                 new_spot.frame = spot.frame + i
