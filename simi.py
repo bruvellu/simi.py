@@ -441,6 +441,49 @@ class Cell:
         else:
             return ''
 
+    def interpolate_spots(self):
+        '''Interpolate spots to cover every frame.'''
+        # In case there is only one spot.
+        if len(self.spots) == 1:
+            return self.spots
+        # Local list of spots and interpolated.
+        spots = self.spots
+        interpolated = []
+
+        for index, spot in enumerate(spots):
+            if index == len(spots) - 1:
+                continue
+            # Add spot to list.
+            interpolated.append(spot)
+
+            # Get next spot.
+            next_spot = spots[index + 1]
+
+            # Calculate how many spots between spots (including first and last)
+            n_spots = next_spot.frame - spot.frame
+
+            # Continue if two spots are sequential.
+            if n_spots == 1:
+                continue
+
+            # Calculate interpolation values.
+            step_x = (next_spot.x - float(spot.x)) / n_spots
+            step_y = (next_spot.y - float(spot.y)) / n_spots
+            step_z = (next_spot.z - float(spot.z)) / n_spots
+
+            # Create spots applying values.
+            for i in range(1, n_spots):
+                new_spot = Spot(parse=False)
+                new_spot.cell = self
+                new_spot.frame = spot.frame + i
+                new_spot.x = int(spot.x + step_x * i)
+                new_spot.y = int(spot.y + step_y * i)
+                new_spot.z = int(spot.z + step_z * i)
+                interpolated.append(new_spot)
+
+        # Return complete list with interpolated spots.
+        return interpolated
+
     def print_data(self):
         '''Print out cell data.'''
         print('\nName: {0} ({1})\nFrame: {2}\nSpots: {3}'.format(
@@ -452,7 +495,7 @@ class Cell:
 
 class Spot:
     '''A spot is a manually tracked point with x, y, z, t dimensions.'''
-    def __init__(self, raw_data):
+    def __init__(self, raw_data='', parse=True):
         self.raw_data = raw_data
         self.cell = None
         self.valid = False
@@ -463,8 +506,12 @@ class Spot:
         self.y = 0
         self.z = 0
 
+        # Additional attributes.
+        self.time = 0 #TODO Function to calculate time in s from ['BIOCELL']['SCANTIME']
+
         # Parse and validate data.
-        self.valid = self.parse_data()
+        if parse:
+            self.valid = self.parse_data()
 
     def __str__(self):
         return 'CELL={cell} FRAME={frame} X={x} Y={y} Z={z}'.format(
