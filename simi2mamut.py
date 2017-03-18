@@ -2,6 +2,7 @@
 
 import argparse
 import simi
+from os.path import splitext
 from mamut_xml_templates import *
 
 # Convert Simi data into MaMuT XML format.
@@ -151,8 +152,12 @@ def main():
     # End AllTracks.
     print(alltracks_end_template)
 
+    # Get some variables from the .sbc file.
+    n_slices = s.sbc.settings['DISC']['LEVELCOUNT']
+    file_name = splitext(args.sbc)[0]
+
     # End XML file.
-    print(end_template)
+    print(end_template.format(filename=file_name, nslices=n_slices, nframes=last_frame))
 
 
 if __name__ == '__main__':

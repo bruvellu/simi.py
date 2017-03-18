@@ -68,7 +68,7 @@ filteredtracks_template = ' <FilteredTracks> <TrackID TRACK_ID="1" /> </Filtered
 end_template = '''
   </Model>
   <Settings>
-    <ImageData filename="wt2.xml" folder="/media/nelas/My Book/PhD/Membranipora/4d/mamut" width="1376" height="1040" nslices="40" nframes="2670" pixelwidth="1.0" pixelheight="1.0" voxeldepth="1.0" timeinterval="1.0" />
+    <ImageData filename="{filename}.xml" folder="/media/nelas/Actinotroch/4d" width="1376" height="1040" nslices="{nslices}" nframes="{nframes}" pixelwidth="1.0" pixelheight="1.0" voxeldepth="1.0" timeinterval="1.0" />
     <InitialSpotFilter feature="QUALITY" value="0.0" isabove="true" />
     <SpotFilterCollection />
     <TrackFilterCollection />
