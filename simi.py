@@ -456,6 +456,7 @@ class Cell:
         for index, spot in enumerate(spots):
             if index == len(spots) - 1:
                 continue
+
             # Add spot to list.
             interpolated.append(spot)
 
@@ -489,6 +490,10 @@ class Cell:
 
         # Return complete list with interpolated spots.
         return interpolated
+
+    def append_spots_until_division(self):
+        '''Add spots until cell division.'''
+        pass #TODO!!!
 
     def print_data(self):
         '''Print out cell data.'''

@@ -23,6 +23,7 @@ def main():
     parser.add_argument('-o', '--out', help='output file', required=True)
     parser.add_argument('-i', '--interpolate', help='interpolate spots', action='store_true')
     parser.add_argument('-f', '--fraction', help='interpolate fraction (all=1.0, half=0.5)', default=1.0)
+    parser.add_argument('-l', '--frame_limit', help='limit number of frames', default=100000000)
     args = parser.parse_args()
 
     # Parse a Simi BioCell .sbd file.
@@ -31,7 +32,10 @@ def main():
     # Declare initial variables.
     output = open(args.out, 'w')
     spot_id = 1
-    last_frame = s.sbd.last_frame
+    if args.frame_limit:
+        last_frame = int(args.frame_limit)
+    else:
+        last_frame = s.sbd.last_frame
 
     # Lists aggregating spots and edges.
     cell_edges = []
@@ -46,6 +50,9 @@ def main():
 
     # Iterate through cells.
     for key, cell in s.sbd.valid_cells.items():
+        if cell.last_frame > last_frame:
+            continue
+
         # Define a list of edges.
         cell.spot_edges = []
 
