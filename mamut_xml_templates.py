@@ -1,7 +1,6 @@
 # Template pre-spots (root and features).
 
-begin_template = '''
-<?xml version="1.0" encoding="UTF-8"?>
+begin_template = '''<?xml version="1.0" encoding="UTF-8"?>
 <TrackMate version="3.4.2">
   <Model spatialunits="pixels" timeunits="frames">
     <FeatureDeclarations>
@@ -42,27 +41,26 @@ begin_template = '''
         <Feature feature="DIVISION_TIME_MEAN" name="Mean cell division time" shortname="Mean div. time" dimension="TIME" isint="false" />
         <Feature feature="DIVISION_TIME_STD" name="Std cell division time" shortname="Std div. time" dimension="TIME" isint="false" />
       </TrackFeatures>
-    </FeatureDeclarations>
-'''
+    </FeatureDeclarations>\n'''
 
 
 # Templates for spots.
-allspots_template =     '    <AllSpots nspots="{nspots}">'
-inframe_template =      '      <SpotsInFrame frame="{frame}">'
-spot_template =         '        <Spot ID="{id}" name="{name} SPOT_{id}" VISIBILITY="1" RADIUS="10.0" QUALITY="-1.0" SOURCE_ID="0" POSITION_T="{frame}.0" POSITION_X="{x}" POSITION_Y="{y}" FRAME="{frame}" POSITION_Z="{z}" />'
-inframe_end_template =  '      </SpotsInFrame>'
-allspots_end_template = '    </AllSpots>'
-inframe_empty_template = '     <SpotsInFrame frame="{frame}" />'
+allspots_template =     '    <AllSpots nspots="{nspots}">\n'
+inframe_template =      '     <SpotsInFrame frame="{frame}">\n'
+spot_template =         '        <Spot ID="{id}" name="{name} SPOT_{id}" VISIBILITY="1" RADIUS="10.0" QUALITY="-1.0" SOURCE_ID="0" POSITION_T="{frame}.0" POSITION_X="{x}" POSITION_Y="{y}" FRAME="{frame}" POSITION_Z="{z}" />\n'
+inframe_end_template =  '     </SpotsInFrame>\n'
+allspots_end_template = '    </AllSpots>\n'
+inframe_empty_template = '     <SpotsInFrame frame="{frame}" />\n'
 
 # Templates for tracks and edges.
-alltracks_template =        '    <AllTracks>'
-track_template =            '      <Track name="Track_{id}" TRACK_INDEX="{id}" TRACK_ID="{id}" TRACK_DURATION="{duration}.0" TRACK_START="0.0" TRACK_STOP="{stop}.0" TRACK_DISPLACEMENT="1.00000000000000" NUMBER_SPOTS="{nspots}" NUMBER_GAPS="0" LONGEST_GAP="0" NUMBER_SPLITS="0" NUMBER_MERGES="0" NUMBER_COMPLEX="0" DIVISION_TIME_MEAN="NaN" DIVISION_TIME_STD="NaN">'
-edge_template =             '        <Edge SPOT_SOURCE_ID="{source_id}" SPOT_TARGET_ID="{target_id}" LINK_COST="-1.0" VELOCITY="1.000000000000000" DISPLACEMENT="1.000000000000000" />'
-track_end_template =        '      </Track>'
-alltracks_end_template =    '    </AllTracks>'
+alltracks_template =        '    <AllTracks>\n'
+track_template =            '      <Track name="Track_{id}" TRACK_INDEX="{id}" TRACK_ID="{id}" TRACK_DURATION="{duration}.0" TRACK_START="0.0" TRACK_STOP="{stop}.0" TRACK_DISPLACEMENT="1.00000000000000" NUMBER_SPOTS="{nspots}" NUMBER_GAPS="0" LONGEST_GAP="0" NUMBER_SPLITS="0" NUMBER_MERGES="0" NUMBER_COMPLEX="0" DIVISION_TIME_MEAN="NaN" DIVISION_TIME_STD="NaN">\n'
+edge_template =             '        <Edge SPOT_SOURCE_ID="{source_id}" SPOT_TARGET_ID="{target_id}" LINK_COST="-1.0" VELOCITY="1.000000000000000" DISPLACEMENT="1.000000000000000" />\n'
+track_end_template =        '      </Track>\n'
+alltracks_end_template =    '    </AllTracks>\n'
 
 # Templates for filtered tracks.
-filteredtracks_template = ' <FilteredTracks> <TrackID TRACK_ID="1" /> </FilteredTracks> '
+filteredtracks_template = '    <FilteredTracks>\n      <TrackID TRACK_ID="1" />\n      <TrackID TRACK_ID="2" />\n    </FilteredTracks>'
 
 # Template for ending the XML file.
 end_template = '''
@@ -96,8 +94,8 @@ end_template = '''
       <ConverterSetups>
         <ConverterSetup>
           <id>0</id>
-          <min>50.0</min>
-          <max>150.0</max>
+          <min>90.0</min>
+          <max>220.0</max>
           <color>-1</color>
           <groupId>0</groupId>
         </ConverterSetup>
@@ -109,12 +107,11 @@ end_template = '''
           <fullRangeMax>65535.0</fullRangeMax>
           <rangeMin>0.0</rangeMin>
           <rangeMax>65535.0</rangeMax>
-          <currentMin>50.0</currentMin>
-          <currentMax>150.0</currentMax>
+          <currentMin>90.0</currentMin>
+          <currentMax>220.0</currentMax>
         </MinMaxGroup>
       </MinMaxGroups>
     </SetupAssignments>
     <Bookmarks />
   </GUIState>
-</TrackMate>
-'''
+</TrackMate>'''
