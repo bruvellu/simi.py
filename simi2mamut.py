@@ -23,7 +23,7 @@ def main():
     parser.add_argument('-o', '--out', help='output file', required=True)
     parser.add_argument('-i', '--interpolate', help='interpolate spots', action='store_true')
     parser.add_argument('-f', '--fraction', help='interpolate fraction (all=1.0, half=0.5)', default=1.0)
-    parser.add_argument('-l', '--frame_limit', help='limit number of frames', default=100000000)
+    parser.add_argument('-l', '--frame_limit', help='limit number of frames', default=None)
     args = parser.parse_args()
 
     # Parse a Simi BioCell .sbd file.
