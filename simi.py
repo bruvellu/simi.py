@@ -520,20 +520,24 @@ class Cell:
         new_y = sum(sum_y) / n
         new_z = sum(sum_z) / n
 
-        # Define new spot.
-        new_spot = Spot(parse=False)
-        new_spot.cell = self
-        new_spot.frame = new_frame
-        new_spot.x = new_x
-        new_spot.y = new_y
-        new_spot.z = new_z
-        new_spot.valid = True
+        # Abort if spot at the same frame already exists.
+        if new_frame == last_spot.frame:
+            pass
+        else:
+            # Define new spot.
+            new_spot = Spot(parse=False)
+            new_spot.cell = self
+            new_spot.frame = new_frame
+            new_spot.x = new_x
+            new_spot.y = new_y
+            new_spot.z = new_z
+            new_spot.valid = True
 
-        # Append spot to spot list.
-        self.spots.append(new_spot)
+            # Append spot to spot list.
+            self.spots.append(new_spot)
 
-        # Updates cell's last frame.
-        self.last_frame = new_frame
+            # Updates cell's last frame.
+            self.last_frame = new_frame
 
     def print_data(self):
         '''Print out cell data.'''
