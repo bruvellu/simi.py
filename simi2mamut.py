@@ -50,9 +50,6 @@ def main():
 
     # Iterate through cells.
     for key, cell in s.sbd.valid_cells.items():
-        if cell.last_frame > last_frame:
-            continue
-
         # Define a list of edges.
         cell.spot_edges = []
 
@@ -62,6 +59,9 @@ def main():
         # Or not.
         else:
             all_spots = cell.spots
+
+        if cell.last_frame > last_frame:
+            continue
 
         # Iterate through cell interpolated spots.
         for spot in all_spots:

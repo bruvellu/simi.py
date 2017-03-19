@@ -443,6 +443,11 @@ class Cell:
 
     def interpolate_spots(self, fraction=1.0):
         '''Interpolate spots to cover every frame.'''
+        # Append spot before division.
+        if self.daughters:
+            validity = [d.valid for d in self.daughters]
+            if not False in validity:
+                self.append_spot_before_division()
         # In case there is only one spot.
         if len(self.spots) == 1:
             return self.spots
@@ -486,14 +491,49 @@ class Cell:
                 new_spot.x = int(spot.x + step_x * i)
                 new_spot.y = int(spot.y + step_y * i)
                 new_spot.z = int(spot.z + step_z * i)
+                new_spot.valid = True
                 interpolated.append(new_spot)
 
         # Return complete list with interpolated spots.
         return interpolated
 
-    def append_spots_until_division(self):
+    def append_spot_before_division(self):
         '''Add spots until cell division.'''
-        pass #TODO!!!
+        last_spot = self.spots[-1]
+        left_child = self.daughters[0].spots[0]
+        sum_x = [last_spot.x, left_child.x]
+        sum_y = [last_spot.y, left_child.y]
+        sum_z = [last_spot.z, left_child.z]
+        n = 2
+
+        # If there are two daughters.
+        if len(self.daughters) == 2:
+            right_child = self.daughters[1].spots[0]
+            sum_x.append(right_child.x)
+            sum_y.append(right_child.y)
+            sum_z.append(right_child.z)
+            n = 3
+
+        # Calculate the coordinates.
+        new_frame = left_child.frame - 1
+        new_x = sum(sum_x) / n
+        new_y = sum(sum_y) / n
+        new_z = sum(sum_z) / n
+
+        # Define new spot.
+        new_spot = Spot(parse=False)
+        new_spot.cell = self
+        new_spot.frame = new_frame
+        new_spot.x = new_x
+        new_spot.y = new_y
+        new_spot.z = new_z
+        new_spot.valid = True
+
+        # Append spot to spot list.
+        self.spots.append(new_spot)
+
+        # Updates cell's last frame.
+        self.last_frame = new_frame
 
     def print_data(self):
         '''Print out cell data.'''
