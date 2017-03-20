@@ -128,6 +128,9 @@ class Sbd:
                     cell = Cell(tmp_cell)
                     cell.sbd = self
 
+                    # if cell.generic_name == '4CA':
+                        # import pdb; pdb.set_trace()
+
                     # Define parent cell.
                     if has_parent:
                         cell.parent = parent_cell
@@ -135,6 +138,7 @@ class Sbd:
                     else:
                         # If cell has a parent, but it's upstream in the lineage.
                         if cell.generation_birth_time in sister_cells.keys():
+                            # TODO Sometimes this fails. The generation birth is not correct. See 4CA cell and its false 3d1 parent in embryo wt2.
                             # Get common parent of sibling cells.
                             common_parent = sister_cells[cell.generation_birth_time].parent
                             cell.parent = common_parent

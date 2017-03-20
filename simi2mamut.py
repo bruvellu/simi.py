@@ -21,6 +21,7 @@ def main():
     parser.add_argument('-c', '--sbc', help='.sbc file', required=True)
     parser.add_argument('-d', '--sbd', help='.sbd file', required=True)
     parser.add_argument('-o', '--out', help='output file', required=True)
+    parser.add_argument('-z', '--z_calibration', help='calibration for z (check HDF5 XML)', required=True)
     parser.add_argument('-i', '--interpolate', help='interpolate spots', action='store_true')
     parser.add_argument('-f', '--fraction', help='interpolate fraction (all=1.0, half=0.5)', default=1.0)
     parser.add_argument('-l', '--frame_limit', help='limit number of frames', default=None)
@@ -74,7 +75,7 @@ def main():
             # Fix Y value to MaMuT.
             spot.y = spot.y * calibration
             # Fix Z value to MaMuT (multiply by 10).
-            spot.z = spot.z * 10.0
+            spot.z = spot.z * float(args.z_calibration)
             # Append spot to the list of his frame.
             spots_per_frame[spot.frame].append(spot)
             # Is this the first spot?
