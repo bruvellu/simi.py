@@ -394,6 +394,16 @@ class Cell:
             # Change status to valid.
             return True
 
+    def get_fate(self):
+        '''Get textual definition of the cell fate.'''
+        fate_id = self.wildtype
+        if fate_id == -1:
+            return None
+        fate_key = 'FATE{id}'.format(id=fate_id)
+        pre_fate = self.sbd.sbc.settings['FATE'][fate_key]
+        fate = pre_fate.split(',')[1]
+        return fate
+
     def update_last_frame(self, spot):
         '''Updates the last_frame value for the cell.'''
         if spot.frame > self.last_frame:
