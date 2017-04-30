@@ -1,14 +1,22 @@
-Python library to parse and access cell lineage data from Simi BioCell
+# simi.py
 
-Example usage:
+Parse and access cell lineage data from Simi BioCell using Python.
 
-```
+## Usage example
+
+Load and parse .sbc and .sbd files.
+
+```python
 # Load library.
 import simi
 
 # Parse .sbc and .sbd files of a SimiProject.
 s = simi.SimiProject(sbc_file="lineage.sbc", sbd_file="lineage.sbd")
+```
 
+Access cell lineage data.
+
+```python
 # The .sbc file contains all settings of the project.
 print s.sbc.settings
 {'3DCENTER': {'AUTO': '1',
@@ -30,15 +38,19 @@ OrderedDict([('ABCD', <simi.Cell instance at 0x7fb27c5803f8>),
              ('3D', <simi.Cell instance at 0x7fb27c580e18>),
              ('4D', <simi.Cell instance at 0x7fb27c5c6d88>),
              ...
+```
 
-# Access each cell individually.
+Get information from every individual cell and tracked spots.
+
+```python
+# Access each cell individually by name.
 c = s.sbd.cells['3D']
 print c.parent
 CELL=2D
 
 # Get all spots with xyz coordinates:
 for spot in c.spots:
-    print spot.frame spot.x, spot.y, spot.z
+    print spot.frame, spot.x, spot.y, spot.z
 
 329 241 34 348
 320 256 39 369
@@ -48,4 +60,21 @@ for spot in c.spots:
 322 248 41 430
 ...
 ```
+
+## Disclaimer
+
+The code has only been tested in my own lineage files. I had to manually fix
+some issues with Simi format before parsing. Most crucial is to make sure each
+cell has a unique name. The library also cannot handle very well alternative
+lineages, if present. Always double check the data before analysing!
+
+Please report any [issues](https://github.com/nelas/simi.py/issues).
+
+## Citation
+
+The code herein is part of the following publication:
+
+Vellutini, B. C., Martín-Durán, J. M. & Hejnol, A. Cleavage modification did
+not alter blastomere fates during bryozoan evolution. BMC Biol. 15, 33 (2017).
+doi: [10.1186/s12915-017-0371-9](http://dx.doi.org/10.1186/s12915-017-0371-9)
 
