@@ -5,13 +5,57 @@ import simi
 from os.path import splitext
 from mamut_xml_templates import *
 
-# Convert Simi data into MaMuT XML format.
+'''Convert Simi data into MaMuT XML format.
 
-# Example:
-# ./simi2mamut.py --sbc wt1.sbc --sbd wt1.sbd --out wt1-inter.xml --interpolate
+Attention! This script is an example to be used as a template. It will not work
+as is on your lineage file. For instance, it assumes that the lineage has two
+founder cells named specifically "AB" and "CD" (see around line 120). Each
+founder cell will make a MaMuT track. If your lineage begins with four cells,
+you need to edit the code below to create four tracks.
 
-# TODO:
-#   - Set voxel size from wt2.xml
+A required parameter is the z_calibration. You will know this value once you
+convert your image data into HDF5 for the BigDataViewer. The value is found in
+the XML file that pairs with the HDF5 file (".h5"). It is the second to last
+value in the <affine> tag: 8.0 in this case:
+
+    <ViewRegistration timepoint="2220" setup="0">
+      <ViewTransform type="affine">
+        <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 8.0 0.0</affine>
+      </ViewTransform>
+    </ViewRegistration>
+
+In most cases the z_calibration value will be 1.0.
+
+Here are a few examples on how to run with different parameters. The simplest:
+
+    python simi2mamut.py --sbc lineage.sbc --sbd lineage.sbd --z_calibration 1.0 --out lineage-simi.xml
+
+If your lineage is too large and you just want to test if it works, you can limit the number of frames:
+
+    python simi2mamut.py --sbc lineage.sbc --sbd lineage.sbd --z_calibration 1.0 --frame_limit 10 --out lineage-simi.xml
+
+In Simi, you can skip time points when marking a cell. When you playback the
+movie, the 3D renderer will interpolate the positions between these two points.
+MaMuT does not do that. To get a smooth movie without gaps, every timepoint
+must have a marked spot. You can use the interpolate parameter to create the
+intermediate spots in your lineage:
+
+    python simi2mamut.py --sbc lineage.sbc --sbd lineage.sbd --z_calibration 1.0 --interpolate --out lineage-simi.xml
+
+You can also control how much interpolation you want by using the fraction
+parameter where 1.0 means all intermediate spots. Here I just want 75% of the
+intermediate spots to be created:
+
+    python simi2mamut.py --sbc lineage.sbc --sbd lineage.sbd --z_calibration 1.0 --interpolate --fraction 0.75 --out lineage-simi.xml
+
+After creating your MaMuT file, make sure that the <ImageData> field is
+actually pointing to the correct image data XML file (the one where you got the
+z_calibration parameter). You need to edit the filename and folder manually,
+but also check that the dimensions match that of your image data (i.e. width,
+height, nslices and nframes):
+
+    <ImageData filename="lineage.xml" folder="/media/nelas/Actinotroch/4d" width="1376" height="1040" nslices="40" nframes="908" pixelwidth="1.0" pixelheight="1.0" voxeldepth="1.0" timeinterval="1.0" />
+'''
 
 def main():
     '''Convert Simi to MaMuT.'''
