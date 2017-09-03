@@ -4,7 +4,18 @@ Parse and access cell lineage data from Simi BioCell using Python.
 
 ## Usage example
 
-Load and parse .sbc and .sbd files.
+First go into Python prompt:
+
+```shell
+user@computer:~/path/to/simi.py$ python
+
+Python 2.7.13 (default, Jan 19 2017, 14:48:08) 
+[GCC 6.3.0 20170118] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> 
+```
+
+Now import the `simi.py` library to load and parse `.sbc` and `.sbd` files.
 
 ```python
 # Load library.
