@@ -61,6 +61,14 @@ for spot in c.spots:
 ...
 ```
 
+## Convert Simi to MaMuT
+
+[simi2mamut.py](simi2mamut.py) is the script I use to convert my Simi lineage
+files to MaMuT. It will _not work_ as is on your own lineage files, but it
+should work after adaptating the code. Please refer to the
+[simi2mamut.py#L8](script documentation) and let me know if you run into
+[issues](https://github.com/nelas/simi.py/issues).
+
 ## Disclaimer
 
 The code has only been tested in my own lineage files. I had to manually fix
