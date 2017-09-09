@@ -45,7 +45,7 @@ class Sbc:
     def open_sbc(self, filepath):
         '''Save abspath and try to read file.'''
         try:
-            sbc_file = open(filepath)
+            sbc_file = open(filepath, 'rU') # 'U' flag needed for Windows
             return sbc_file
         except:
             print('Could not load the file "{0}"'.format(filepath))
@@ -56,16 +56,16 @@ class Sbc:
         current_setting = u''
         # Read SBC file line by line.
         for line in self.sbc_file.readlines():
-            if line.startswith(';') or line.startswith('\r'):
+            if line.startswith(';') or line.startswith('\n'):
                 continue
             else:
                 if line.startswith('['):
-                    current_setting = line.strip('[]\r\n')
+                    current_setting = line.strip('[]\n')
                     self.settings[current_setting] = {}
                 else:
                     splitted = line.split('=')
                     key = splitted[0]
-                    value = splitted[1].strip('\r\n')
+                    value = splitted[1].strip('\n')
                     self.settings[current_setting][key] = value
 
 
@@ -105,7 +105,7 @@ class Sbd:
     def open_sbd(self, filepath):
         '''Get user input, save abspath and try to read file.'''
         try:
-            sbd_file = open(filepath)
+            sbd_file = open(filepath, 'rU')
             return sbd_file
         except:
             print('Could not load the file "{0}"'.format(filepath))
