@@ -280,7 +280,7 @@ class Cell:
         self.spots = []
 
         # Additional attributes.
-        self.last_frame = None
+        self.last_frame = -1
         self.parent = None
         self.daughters = []
 
